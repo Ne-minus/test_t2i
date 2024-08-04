@@ -1,0 +1,6 @@
+MODEL_NAME:
+  - "stabilityai/stable-diffusion-3-medium"
+DATASET_PATH:
+  - "./taxo2img_test_set_for_DiffMs.tsv"
+OUTPUT_DIR:
+  - "./generated" 
