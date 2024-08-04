@@ -6,6 +6,7 @@ from PIL import Image
 from torch.utils.data import DataLoader
 import os
 import yaml
+from tqdm import tqdm
 
 with open(r"./t2i_configs.yml") as file:
     params_list = yaml.load(file, Loader=yaml.FullLoader)
@@ -68,11 +69,11 @@ class InitializeModels:
 
 if __name__ == '__main__':
     our_set = GenerationDataset(params_list["DATASET_PATH"][0])
-    loader = DataLoader(our_set, batch_size=16)
+    loader = DataLoader(our_set, batch_size=4)
 
     print(params_list)
 
     model = InitializeModels(params_list["MODEL_NAME"][0], params_list["OUTPUT_DIR"][0])
 
-    for batch in loader:
+    for batch in tqdm(loader):
         model.generate_image(batch, our_set.ids)
