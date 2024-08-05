@@ -1,9 +1,10 @@
 import torch
 import huggingface_hub
-from dataset_smapler import GenerationDataset
+from dataset_sampler import GenerationDataset
 from diffusers import StableDiffusionPipeline, AutoPipelineForText2Image, Transformer2DModel, PixArtSigmaPipeline, StableDiffusion3Pipeline, DiffusionPipeline
 from PIL import Image
 from torch.utils.data import DataLoader
+from tqdm import tqdm
 import os
 import yaml
 
@@ -60,13 +61,11 @@ class InitializeModels:
 
 
     def generate_image(self, batch):
-        batch_lemmas = [i[1] for i in batch]
-        batch_ids = [i[0] for i in batch]
-        images = self.pipe(batch_lemmas, 
+        images = self.pipe(list(batch[1]), 
                             num_inference_steps=28,
                             guidance_scale=7.0,).images
         
-        for idx, pic in zip(batch_ids, images):
+        for idx, pic in zip(batch[0].tolist(), images):
             pic.save(f"{self.dir}/img_{idx}.png")
 
 
@@ -78,5 +77,5 @@ if __name__ == '__main__':
 
     model = InitializeModels(params_list["MODEL_NAME"][0], params_list["OUTPUT_DIR"][0])
 
-    for batch in loader:
+    for batch in tqdm(loader):
         model.generate_image(batch)

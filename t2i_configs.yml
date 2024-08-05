@@ -1,6 +1,6 @@
 MODEL_NAME:
         - "stabilityai/sdxl-turbo"
 DATASET_PATH:
-  - "./Users/eneminova/LLM_Taxonomy/text2image/taxo2img_test_set_for_DiffMs_with_images_paths_2.tsv"
+  - "./taxo2img_test_set_for_DiffMs_with_images_paths_2.tsv"
 OUTPUT_DIR:
   - "./generated" 
