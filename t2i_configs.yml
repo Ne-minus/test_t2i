@@ -1,6 +1,6 @@
 MODEL_NAME:
   - "stabilityai/stable-diffusion-3-medium"
 DATASET_PATH:
-  - "./taxo2img_test_set_for_DiffMs.tsv"
+  - "./Users/eneminova/LLM_Taxonomy/text2image/taxo2img_test_set_for_DiffMs_with_images_paths_2.tsv"
 OUTPUT_DIR:
   - "./generated" 
