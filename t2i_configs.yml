@@ -1,5 +1,5 @@
 MODEL_NAME:
-  - "stabilityai/stable-diffusion-3-medium"
+        - "stabilityai/sdxl-turbo"
 DATASET_PATH:
   - "./taxo2img_test_set_for_DiffMs.tsv"
 OUTPUT_DIR:

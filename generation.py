@@ -11,13 +11,18 @@ from tqdm import tqdm
 with open(r"./t2i_configs.yml") as file:
     params_list = yaml.load(file, Loader=yaml.FullLoader)
 
-# huggingface_hub.login(token='YOUR HF ACCESS TOKEN')
+
+huggingface_hub.login(token='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')
     
 class InitializeModels:
     def __init__(self, model_name, outputdir_name):
         self.model_path = model_name
-        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
- 
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        if torch.cuda.is_available():
+            print(f"Using GPU: {torch.cuda.current_device()}")
+            print(f"Device name: {torch.cuda.get_device_name(torch.cuda.current_device())}")
+        else:
+            print("CUDA is not available")
         dir_name = model_name.replace('/', '_')
 
         self.dir  = f"{outputdir_name}/{dir_name}"
@@ -29,13 +34,11 @@ class InitializeModels:
 
     def pipe_def(self):
 
-        if self.model_path == 'stabilityai/stable-diffusion-3-medium':
-            self.pipe = StableDiffusion3Pipeline.from_pretrained(self.model_path, 
-                                                                 torch_dtype=torch.float16, 
-                                                                 variant="fp16")
+        if self.model_path == 'stabilityai/stable-diffusion-3-medium-diffusers':
+            self.pipe = StableDiffusion3Pipeline.from_pretrained("stabilityai/stable-diffusion-3-medium-diffusers", torch_dtype=torch.float16)
         
         elif self.model_path == 'stabilityai/stable-diffusion-xl-base-1.0' or  self.model_path == 'playgroundai/playground-v2.5-1024px-aesthetic':
-            self.pipe == DiffusionPipeline.from_pretrained(self.model_path, torch_dtype=torch.float16)
+            self.pipe = DiffusionPipeline.from_pretrained(self.model_path, torch_dtype=torch.float16)
 
         elif self.model_path == 'runwayml/stable-diffusion-v1-5' or self.model_path == 'prompthero/openjourney':
             self.pipe = StableDiffusionPipeline.from_pretrained(self.model_path, torch_dtype=torch.float16)
@@ -69,7 +72,7 @@ class InitializeModels:
 
 if __name__ == '__main__':
     our_set = GenerationDataset(params_list["DATASET_PATH"][0])
-    loader = DataLoader(our_set, batch_size=4)
+    loader = DataLoader(our_set, batch_size=16)
 
     print(params_list)
 
