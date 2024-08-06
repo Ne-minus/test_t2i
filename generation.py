@@ -80,4 +80,4 @@ if __name__ == '__main__':
     model = InitializeModels(params_list["MODEL_NAME"][0], params_list["OUTPUT_DIR"][0])
 
     for batch in tqdm(loader):
-        model.generate_imagebatch)
+        model.generate_image(batch)
