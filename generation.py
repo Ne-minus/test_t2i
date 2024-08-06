@@ -28,7 +28,7 @@ class InitializeModels:
 
     def pipe_def(self):
 
-        if self.model_path == 'stabilityai/stable-diffusion-3-medium':
+        if self.model_path == 'stabilityai/stable-diffusion-3-medium-diffusers':
             self.pipe = StableDiffusion3Pipeline.from_pretrained(self.model_path, 
                                                                  torch_dtype=torch.float16, 
                                                                  variant="fp16")
@@ -69,7 +69,7 @@ class InitializeModels:
 
 if __name__ == '__main__':
     our_set = GenerationDataset(params_list["DATASET_PATH"][0])
-    loader = DataLoader(our_set, batch_size=16)
+    loader = DataLoader(our_set, batch_size=4)
 
     print(params_list)
 
