@@ -31,7 +31,7 @@ class InitializeModels:
 
         self.pipe_def()
         
-def pipe_def(self):
+    def pipe_def(self):
 
         if self.model_path == 'stabilityai/stable-diffusion-3-medium-diffusers':
             self.pipe = StableDiffusion3Pipeline.from_pretrained("stabilityai/stable-diffusion-3-medium-diffusers", torch_dtype=torch.float16)
