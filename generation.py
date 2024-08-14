@@ -1,7 +1,7 @@
 import torch
 import huggingface_hub
 from dataset_sampler import GenerationDataset
-from diffusers import StableDiffusionPipeline, AutoPipelineForText2Image, Transformer2DModel, PixArtSigmaPipeline, StableDiffusion3Pipeline, DiffusionPipeline
+from diffusers import StableDiffusionPipeline, AutoPipelineForText2Image, Transformer2DModel, PixArtSigmaPipeline, StableDiffusion3Pipeline, DiffusionPipeline, HunyuanDiTPipeline
 from PIL import Image
 from torch.utils.data import DataLoader
 from tqdm import tqdm
@@ -36,13 +36,16 @@ class InitializeModels:
 
         if self.model_path == 'stabilityai/stable-diffusion-3-medium-diffusers':
             self.pipe = StableDiffusion3Pipeline.from_pretrained("stabilityai/stable-diffusion-3-medium-diffusers", torch_dtype=torch.float16)
+            self.pipe = StableDiffusion3Pipeline.from_pretrained(self.model_path, 
+                                                                 torch_dtype=torch.float16, 
+                                                                 variant="fp16")
         
         elif self.model_path == 'stabilityai/stable-diffusion-xl-base-1.0' or  self.model_path == 'playgroundai/playground-v2.5-1024px-aesthetic':
             self.pipe = DiffusionPipeline.from_pretrained(self.model_path, torch_dtype=torch.float16)
 
         elif self.model_path == 'runwayml/stable-diffusion-v1-5' or self.model_path == 'prompthero/openjourney':
-            self.pipe = StableDiffusionPipeline.from_pretrained(self.model_path, torch_dtype=torch.float16)
-
+            self.pipe = StableDiffusionPipeline.from_pretrained(self.model_path, safety_checker = None, torch_dtype=torch.float16)
+            
         elif self.model_path == 'stabilityai/sdxl-turbo' or self.model_path == 'kandinsky-community/kandinsky-3':
             self.pipe = AutoPipelineForText2Image.from_pretrained(self.model_path, torch_dtype=torch.float16, variant="fp16")
 
@@ -56,6 +59,9 @@ class InitializeModels:
         elif self.model_path == "DeepFloyd/IF-I-XL-v1.0":
             self.pipe = DiffusionPipeline.from_pretrained("DeepFloyd/IF-I-XL-v1.0", variant="fp16", torch_dtype=torch.float16)
             self.pipe.enable_model_cpu_offload()
+
+        elif self.model_path == "Tencent-Hunyuan/HunyuanDiT-v1.2-Diffusers":
+            self.pipe = HunyuanDiTPipeline.from_pretrained(self.path,  torch_dtype=torch.float16)
 
         self.pipe.to(self.device)
 
@@ -71,7 +77,7 @@ class InitializeModels:
 
 if __name__ == '__main__':
     our_set = GenerationDataset(params_list["DATASET_PATH"][0])
-    loader = DataLoader(our_set, batch_size=16)
+    loader = DataLoader(our_set, batch_size=4)
 
     print(params_list)
 
