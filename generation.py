@@ -2,7 +2,6 @@ import torch
 import huggingface_hub
 from dataset_sampler import GenerationDataset
 from diffusers import StableDiffusionPipeline, AutoPipelineForText2Image, Transformer2DModel, PixArtSigmaPipeline, StableDiffusion3Pipeline, DiffusionPipeline, HunyuanDiTPipeline
-from PIL import Image
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 import os
@@ -13,7 +12,8 @@ with open(r"./t2i_configs.yml") as file:
 
 
 huggingface_hub.login(token='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')
-    
+
+
 class InitializeModels:
     def __init__(self, model_name, outputdir_name):
         self.model_path = model_name
@@ -28,18 +28,16 @@ class InitializeModels:
         self.dir  = f"{outputdir_name}/{dir_name}"
         if not os.path.exists(self.dir):
             os.mkdir(self.dir)
-  
+
         self.pipe_def()
-
-
+        
     def pipe_def(self):
 
         if self.model_path == 'stabilityai/stable-diffusion-3-medium-diffusers':
-            self.pipe = StableDiffusion3Pipeline.from_pretrained("stabilityai/stable-diffusion-3-medium-diffusers", torch_dtype=torch.float16)
-            self.pipe = StableDiffusion3Pipeline.from_pretrained(self.model_path, 
-                                                                 torch_dtype=torch.float16, 
+                        self.pipe = StableDiffusion3Pipeline.from_pretrained(self.model_path,
+                                                                 torch_dtype=torch.float16,
                                                                  variant="fp16")
-        
+
         elif self.model_path == 'stabilityai/stable-diffusion-xl-base-1.0' or  self.model_path == 'playgroundai/playground-v2.5-1024px-aesthetic':
             self.pipe = DiffusionPipeline.from_pretrained(self.model_path, torch_dtype=torch.float16)
 
@@ -51,17 +49,17 @@ class InitializeModels:
 
         elif self.model_path == 'PixArt-alpha/PixArt-Sigma-XL-2-512-MS':
             self.pipe = PixArtSigmaPipeline.from_pretrained(
-                        "PixArt-alpha/PixArt-Sigma-XL-2-1024-MS", 
+                        self.model_path,
                         torch_dtype=torch.float16,
                         use_safetensors=True,
                         )
-            
+
         elif self.model_path == "DeepFloyd/IF-I-XL-v1.0":
-            self.pipe = DiffusionPipeline.from_pretrained("DeepFloyd/IF-I-XL-v1.0", variant="fp16", torch_dtype=torch.float16)
+            self.pipe = DiffusionPipeline.from_pretrained(self.model_path, variant="fp16", torch_dtype=torch.float16)
             self.pipe.enable_model_cpu_offload()
 
         elif self.model_path == "Tencent-Hunyuan/HunyuanDiT-v1.2-Diffusers":
-            self.pipe = HunyuanDiTPipeline.from_pretrained(self.path,  torch_dtype=torch.float16)
+            self.pipe = HunyuanDiTPipeline.from_pretrained(self.model_path, torch_dtype=torch.float16)
 
         self.pipe.to(self.device)
 
@@ -70,7 +68,7 @@ class InitializeModels:
         images = self.pipe(list(batch[1]), 
                             num_inference_steps=28,
                             guidance_scale=7.0,).images
-        
+    
         for idx, pic in zip(batch[0].tolist(), images):
             pic.save(f"{self.dir}/img_{idx}.png")
 
