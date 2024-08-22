@@ -1,6 +1,6 @@
 MODEL_NAME:
-        - "stabilityai/sdxl-turbo"
+  - "runwayml/stable-diffusion-v1-5"
 DATASET_PATH:
-  - "./taxo2img_test_set_for_DiffMs_with_images_paths_2.tsv"
+  - "/home/vityav/test_t2i/main.csv"
 OUTPUT_DIR:
   - "./generated" 

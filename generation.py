@@ -70,7 +70,7 @@ class InitializeModels:
                             guidance_scale=7.0,).images
     
         for idx, pic in zip(batch[0].tolist(), images):
-            pic.save(f"{self.dir}/img_{idx}.png")
+            pic.save(f"{self.dir}/{idx}.png")
 
 
 if __name__ == '__main__':
